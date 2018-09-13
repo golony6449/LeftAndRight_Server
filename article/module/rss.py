@@ -12,11 +12,23 @@ class Rss:
     def scrap(self):
         # 한겨레 RSS 서비스 http://www.hani.co.kr/arti/RSS/list1.html
         # 조선일보 RSS 서비스 http://rssplus.chosun.com/
+
         html = requests.get(self.chosun)
+        # html = requests.get(self.hani)
         parser = BeautifulSoup(html.text, 'lxml-xml')
         articleList = parser.find_all('item')
         for item in articleList:
             print(item.find('title').text)
-            print(item.text)
+            self.parserForChosun(item.find('link').text)
+            # print(item.text)
 
         # print(parser)
+
+    def parserForChosun(self, url):
+        html = requests.get(url)
+        html.encoding = 'utf-8'
+        parser = BeautifulSoup(html.text, 'html.parser')
+        articleBody = parser.find_all('div', {'class': 'par'})
+        for item in articleBody:
+            print(item.text)
+            # print(item.text.encode('iso-8859-1').decode('utf-8'))
