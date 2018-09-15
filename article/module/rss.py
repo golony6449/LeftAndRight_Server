@@ -19,7 +19,7 @@ class Rss:
         # 한겨레는 rss의 item 태그 하위의 title 태그
         # 조선일보도 동일
 
-    def scrap(self):
+    def scrap(self, count=None):
         # 한겨레 RSS 서비스 http://www.hani.co.kr/arti/RSS/list1.html
         # 조선일보 RSS 서비스 http://rssplus.chosun.com/
 
@@ -30,14 +30,14 @@ class Rss:
             print(item.find('title').text)
 
             if self.press is 'chosun':
-                self.parserForChosun(item.find('link').text)
+                self.parserForChosun(item.find('link').text, None)
             elif self.press is 'hani':
                 self.parserForHani(item.find('link').text)
             else:
                 raise Exception('WrongPressName')
 
 
-    def parserForChosun(self, url):
+    def parserForChosun(self, url, count=None):
         html = requests.get(url)
         html.encoding = 'utf-8'
         parser = BeautifulSoup(html.text, 'html.parser')
@@ -45,7 +45,7 @@ class Rss:
 
         articleStringList = [i.text for i in articleBody]
 
-        nlp.morpAnalyze(articleStringList)
+        nlp.morpAnalyze(articleStringList, count)
 
 
     def parserForHani(selfself, url):
