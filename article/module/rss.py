@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-import nlp
+import article.module.nlp as nlp
 
 
 class Rss:
@@ -26,15 +26,25 @@ class Rss:
         html = requests.get(self.target)
         parser = BeautifulSoup(html.text, 'lxml-xml')
         articleList = parser.find_all('item')
+
+        articleObjList = []
         for item in articleList:
-            print(item.find('title').text)
+            obj = []
+            obj.append(item.find('title').text)
+
+            # test Code
+            # print(item.find('title').text)
 
             if self.press is 'chosun':
-                self.parserForChosun(item.find('link').text, None)
+                obj.append(self.parserForChosun(item.find('link').text, None))
             elif self.press is 'hani':
-                self.parserForHani(item.find('link').text)
+                obj.append(self.parserForHani(item.find('link').text))
             else:
                 raise Exception('WrongPressName')
+
+            articleObjList.append(obj)
+
+        return articleObjList
 
 
     def parserForChosun(self, url, count=None):
@@ -45,8 +55,13 @@ class Rss:
 
         articleStringList = [i.text for i in articleBody]
 
-        nlp.morpAnalyze(articleStringList, count)
+        wordDict = nlp.morpAnalyze(articleStringList, count)
+
+        return wordDict
 
 
     def parserForHani(selfself, url):
         pass
+
+    def pressName(self):
+        return self.press
