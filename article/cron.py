@@ -1,5 +1,5 @@
 from django_cron import CronJobBase, Schedule
-from article.models import recentPost
+from article.models import recentPost, press
 from article.module import rss
 
 class crawlPost(CronJobBase):
@@ -16,7 +16,8 @@ class crawlPost(CronJobBase):
 
         for idx in range(len(result[0])):
             # TODO: FK 부분 참조 문제 발생
-            query = recentPost(name=chosun.press, title=result[idx][0])
+            pressObj = press.objects.get(name='chosun')
+            query = recentPost(name=pressObj, title=result[idx][0])
 
             # TODO: 리펙토링
             temp = []

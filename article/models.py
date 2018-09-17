@@ -22,3 +22,7 @@ class recentPost(models.Model):
     keyword3 = models.CharField(max_length=20)
     keyword4 = models.CharField(max_length=20)
     keyword5 = models.CharField(max_length=20)
+
+class exceptedWord(models.Model):
+    name = models.CharField(max_length=20, primary_key=True)
+    press = models.ForeignKey('press', on_delete=models.CASCADE)
