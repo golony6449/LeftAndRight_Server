@@ -21,7 +21,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # TODO: Regenerate and apply SECRET_KEY
-SECRET_KEY =
+SECRET_KEY ='d%zo78bjdnlwfm+u0(99bhispj)k&vk%+@g430mf*&xk+c#h=^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -32,12 +32,16 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'article.apps.ArticleConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'webpack_loader',
+    'django_cron',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -55,7 +59,7 @@ ROOT_URLCONF = 'LeftAndRight_server.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')]
+        'DIRS': [os.path.join(BASE_DIR, 'templates'), os.path.join(BASE_DIR, 'article/templates')]
         ,
         'APP_DIRS': True,
         'OPTIONS': {
@@ -85,9 +89,9 @@ WSGI_APPLICATION = 'LeftAndRight_server.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': '',
-        'USER': '',
-        'PASSWORD' : '', # TODO: BEFORE SERVICE, IT SHOULD BE DELETEED
+        'NAME': 'django',
+        'USER': 'djangodb',
+        'PASSWORD' : 'qkrtjdgma', # TODO: BEFORE SERVICE, IT SHOULD BE DELETE
         'HOST' : 'localhost',
         'PORT' : '3306'
     }
@@ -115,9 +119,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ko-kr'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Seoul'
 
 USE_I18N = True
 
@@ -125,9 +129,53 @@ USE_L10N = True
 
 USE_TZ = True
 
+# django-CORS 설정
+
+MIDDLEWARE_CLASSES = (
+    'django.middleware.common.CommonMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+)
+
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
+# https://docs.djangoproject.com/en/2.1/ref/settings/#id18
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'article/static/src/assets'),
+    os.path.join(BASE_DIR, 'article/static/src/components'),
+    os.path.join(BASE_DIR, 'article/static/src'),
+    os.path.join(BASE_DIR, 'article/static/dist') # For webpack
+)
+
+CRON_CLASSES = [
+    'article.cron.crawlPost',
+]
+
+## Webpack Settings
+
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'CACHE': not DEBUG,
+        'BUNDLE_DIR_NAME': '',
+        'STATS_FILE': os.path.join(BASE_DIR, 'article/templates/article/webpack-stats.json'),
+        'POLL_INTERVAL': 0.1,
+        'TIMEOUT': None,
+        'IGNORE': ['.+\.hot-update.js', '.+\.map']
+    }
+}
+
+# # More settings
+# # Add path into TEMPLATES_DIR
+# TEMPLATES = [
+#     {
+#         'DIRS': [BASE_DIR],
+#         ...
+#     },
+# ]
