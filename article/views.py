@@ -36,6 +36,7 @@ def search_relation(request):
 
     print("Tried")
     print('method: ', request.method)
+    print("journalism: ", request.POST['journalism'])
 
     if request.method == 'OPTIONS':
         print(request.__dict__)

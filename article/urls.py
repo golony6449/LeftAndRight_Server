@@ -9,5 +9,5 @@ urlpatterns = [
     # path('register', views.register, name='register'),
     path('register', views.RegisterView.as_view(), name='register'),
     path('try_register', views.try_register, name='try_register'),
-    path('search_relation',views.try_register, name='search_relation'),
+    path('find_relation',views.search_relation, name='search_relation'),
 ]
