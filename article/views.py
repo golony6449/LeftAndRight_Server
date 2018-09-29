@@ -17,19 +17,12 @@ from .view.find_relation import *
 # from models import recentPost
 
 from rest_framework.parsers import JSONParser
+import json
 
 # Create your views here.
 def index(request):
     # return HttpResponse("This is article site.")
     return render(request, 'article/index.html')
-
-def login(request):
-    return render(request, 'article/login.html')
-
-def try_login(request):
-    print('id', request.POST['id'])
-    print('pw', request.POST['password'])
-    return HttpResponseRedirect(reverse('login'))
 
 @csrf_exempt
 def search_relation(request):
@@ -39,6 +32,8 @@ def search_relation(request):
     print("search request income")
     print('method: ', request.method)
 
+    requestJson = None
+
     if request.method == 'OPTIONS':
         print(request.__dict__)
         response = HttpResponse()
@@ -46,19 +41,20 @@ def search_relation(request):
         return response
 
     if request.method == 'POST':
-        # print(JSONParser.parse(request))
-
         print(request.body)
+
+        requestJson = json.loads(request.body)
+
+        # For Test
         print('keys: ', end='')
-        for key in request.POST.keys():
-            print(key, end='  ')
+        for key in requestJson.keys():
+            print(key, ' : ', requestJson[key], end='  ')
+        print()
+
+    result = find_relation(requestJson['journalism'], )
 
     return HttpResponse("Success")
 
-    result = find_relation()
-
-    # TODO: html 작성
-    return HttpResponse(request, 'article/list.html')
 
 # For Test
 def test(request):
@@ -76,6 +72,14 @@ def test(request):
 
     else:
         return render(request, 'article/test.html')
+
+# def login(request):
+#     return render(request, 'article/login.html')
+#
+# def try_login(request):
+#     print('id', request.POST['id'])
+#     print('pw', request.POST['password'])
+#     return HttpResponseRedirect(reverse('login'))
 
 # # Case 1. generic view를 사용하지 않고 구현
 # def register():
