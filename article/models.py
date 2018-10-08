@@ -27,6 +27,23 @@ class recentPost(models.Model):
     def __str__(self):
         return self.title
 
+    def set_keywords(self, keyword_list):
+        model_list = [self.keyword1, self.keyword2, self.keyword3, self.keyword4, self.keyword5]
+        length = len(keyword_list)
+
+        if len(keyword_list) > 5:
+            print('WARNING: List is TOO LONG')
+            length = 5
+
+        elif len(keyword_list) < 5:
+            print('WARNING: List is TOO SHORT')
+            for field in model_list:
+                field = ''
+
+        for idx in range(length):
+            model_list[idx], _ = keyword_list[idx]
+
+
 class exceptedWord(models.Model):
     name = models.CharField(max_length=20, primary_key=True)
     press = models.ForeignKey('press', on_delete=models.CASCADE)

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Crawl Post</title>
+</head>
+<body>
+    <form action="{% url 'do_crawl' %}" method="post">
+        {% csrf_token %}
+        <p> Target URL
+            <input type="text" name="target">
+        </p>
+        <p>
+            조선일보 <input type="radio" name="press" value="chosun" checked>
+        </p>
+        <p>
+           한겨레 <input type="radio" name="pres" value="hani" disabled>
+            <!-- 개발중 -->
+        </p>
+        <input type="submit" value="Crawl">
+    </form>
+</body>
+</html>

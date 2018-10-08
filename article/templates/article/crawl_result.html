@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cron Result</title>
+</head>
+<body>
+{% if success %}
+    <h1>Crawl SUCCESS</h1>
+    <p>press: {{ press }}</p>
+    <p>title: {{ title }}</p>
+    <p>url: {{ url }}</p>
+
+    {% for keyword, count in word_count %}
+        <p>{{ keyword }}: {{ count }} times</p>
+    {% endfor %}
+{% else %}
+    <h1>Crawl FAIL</h1>
+{% endif %}
+</body>
+</html>

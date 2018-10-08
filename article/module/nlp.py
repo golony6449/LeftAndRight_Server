@@ -4,7 +4,7 @@ def main():
     twitter = Okt()
     wordList = twitter.pos()
 
-def morpAnalyze(inputStringList, count=None):
+def morpAnalyze(inputStringList, returnDict=False):
     twitter = Okt()
     wordDict = {}
 
@@ -18,9 +18,10 @@ def morpAnalyze(inputStringList, count=None):
                 else:
                     wordDict[word[0]] += 1
 
-    if count == None:
+    if returnDict is True:
         return wordDict
 
+    # pre-processing for sort
     keyList = [x for x in wordDict.keys()]
     valueList = []
 
@@ -28,13 +29,17 @@ def morpAnalyze(inputStringList, count=None):
         valueList.append(wordDict[key])
         # print("({} : {})".format(key, wordDict[key]), end=" ")
 
-    keyList, valueList = sortDict(keyList, valueList)
+    # sort dict
+    result = sortDict(keyList, valueList)
 
-    # 슬라이싱
-    resultDict = {}
-    for idx in range(count):
-        resultDict[keyList[idx]] = valueList[idx]
-    return resultDict
+    return result
+
+    # Legacy
+    # # 슬라이싱
+    # resultDict = {}
+    # for idx in range(count):
+    #     resultDict[keyList[idx]] = valueList[idx]
+    # return resultDict
 
     # test code
     # for key in keyList:
@@ -48,7 +53,10 @@ def sortDict(keys, values):
             if values[idxA] > values[idxB]:
                 keys[idxA], keys[idxB] = keys[idxB], keys[idxA]
                 values[idxA], values[idxB] = values[idxB], values[idxA]
-    return keys, values
+    result = []
+    for idx in range(listLength):
+        result.append((keys[idx], values[idx]))
+    return result
 
 if __name__ == '__main__':
     main()

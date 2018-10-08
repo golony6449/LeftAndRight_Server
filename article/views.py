@@ -8,10 +8,11 @@ from django.views.decorators.http import require_http_methods
 # view function directory
 from .view.find_relation import *
 
-# TODO: 에러발생 이유 파악
-# from models import recentPost
-
+from .models import recentPost, press
 import json
+
+from .module.rss import Rss
+from .module.crawler import Crawler
 
 # Create your views here.
 def index(request):
@@ -57,6 +58,7 @@ def search_by_keyword(request):
     press = requestJson['journalism']
     keyword = requestJson['keyword']
 
+    # TODO; Logging 기능 추가
     print(keyword)
 
     print('index 1 obj: ', recentPost.objects.get(keyword1=keyword))
@@ -83,6 +85,47 @@ def test(request):
 
     else:
         return render(request, 'article/test.html')
+
+def try_crawl(request):
+    return render(request, 'article/crawl.html')
+
+def crawl(request):
+    print('cron"s work start!')
+    response = {}
+
+    crawler = None
+    pressObj = None
+
+    if request.POST['press'] == 'chosun':
+        crawler = Crawler('chosun')
+        pressObj = press.objects.get(name='chosun')
+    else:
+        crawler = Crawler('hani')
+        pressObj = press.objects.get(name='hani')
+
+    postInfo = crawler.scrap(request.POST['target'])
+
+    print(postInfo)
+
+    print('scrapping complete')
+
+    query = recentPost(name=pressObj, title=postInfo['title'], url=postInfo['url'])
+
+    # TODO: 반복문으로 이쁘게 만들수 없을까?
+    # query.set_keywords(postInfo['word_count'])
+
+    query.keyword1, _ = postInfo['word_count'][0]
+    query.keyword2, _ = postInfo['word_count'][1]
+    query.keyword3, _ = postInfo['word_count'][2]
+    query.keyword4, _ = postInfo['word_count'][3]
+    query.keyword5, _ = postInfo['word_count'][4]
+
+    query.save()
+
+    response = postInfo
+    response['success'] = True
+
+    return render(request, 'article/crawl_result.html', response)
 
 # def login(request):
 #     return render(request, 'article/login.html')
