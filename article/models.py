@@ -17,11 +17,15 @@ class recentPost(models.Model):
     name = models.ForeignKey('press', on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
     date = models.DateTimeField(auto_now=True)
+    url = models.CharField(max_length=300)
     keyword1 = models.CharField(max_length=20)
     keyword2 = models.CharField(max_length=20)
     keyword3 = models.CharField(max_length=20)
     keyword4 = models.CharField(max_length=20)
     keyword5 = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.title
 
 class exceptedWord(models.Model):
     name = models.CharField(max_length=20, primary_key=True)

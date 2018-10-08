@@ -1,14 +1,9 @@
 from django.shortcuts import render
-from django.http import HttpResponse, HttpResponseRedirect
-from django.urls import reverse
-from django.views import generic
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 
 # post
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
-
-# Form for register
-from .forms import RegisterForm
 
 # view function directory
 from .view.find_relation import *
@@ -16,7 +11,6 @@ from .view.find_relation import *
 # TODO: 에러발생 이유 파악
 # from models import recentPost
 
-from rest_framework.parsers import JSONParser
 import json
 
 # Create your views here.
@@ -55,6 +49,23 @@ def search_relation(request):
 
     return HttpResponse("Success")
 
+@csrf_exempt
+def search_by_keyword(request):
+    requestJson = json.loads(request.body)
+    responseDict = {}
+
+    press = requestJson['journalism']
+    keyword = requestJson['keyword']
+
+    print(keyword)
+
+    print('index 1 obj: ', recentPost.objects.get(keyword1=keyword))
+    responseDict['result'] = recentPost.objects.get(keyword1=keyword).title
+
+    # return HttpResponse("This function is now DEVELOP")
+    responseDict['message'] = 'This function is now DEVELOP'
+
+    return JsonResponse(responseDict)
 
 # For Test
 def test(request):
