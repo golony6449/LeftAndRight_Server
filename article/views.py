@@ -70,22 +70,6 @@ def search_by_keyword(request):
 
     return JsonResponse(responseDict)
 
-# For Test
-def test(request):
-    print('test request income')
-    print('income method: ', request.method)
-    print('request body: ', request.body)
-    print('request data', request.data)
-
-    if request.method == 'POST':
-        print('keys: ', end='')
-        for key in request.POST.keys():
-            print(key, end='  ')
-
-        return HttpResponse("Success")
-
-    else:
-        return render(request, 'article/test.html')
 
 def try_crawl(request):
     return render(request, 'article/crawl.html')
