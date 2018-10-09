@@ -74,6 +74,7 @@ def search_by_keyword(request):
 def try_crawl(request):
     return render(request, 'article/crawl.html')
 
+
 def crawl(request):
     print('cron"s work start!')
     response = {}
