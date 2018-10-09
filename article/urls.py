@@ -13,4 +13,5 @@ urlpatterns = [
     path('search', views.search_by_keyword, name='search_by_keyword'),
     path('try_crawl', views.try_crawl, name='try_crawl'),
     path('crawl', views.crawl, name='do_crawl'),
+    path('search_web', views.search_in_web, name='search_in_web'),
 ]

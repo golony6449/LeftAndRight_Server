@@ -13,6 +13,7 @@ import json
 
 from .module.rss import Rss
 from .module.crawler import Crawler
+from .module.searchEngine import SearchEngine
 
 # Create your views here.
 def index(request):
@@ -126,6 +127,32 @@ def crawl(request):
     response['success'] = True
 
     return render(request, 'article/crawl_result.html', response)
+@ csrf_exempt
+def search_in_web(request):
+    # Front-end와 협의 후 수정
+    # press = request.POST['press']
+    press = 'chosun'
+    requestJson = json.loads(request.body)
+    keyword = requestJson['keyword']
+
+    if press == 'chosun':
+        search_engine = SearchEngine(press)
+        result = search_engine.do_search(keyword)
+
+    elif press == 'hani':
+        pass
+
+    else:
+        return HttpResponse('WrongPressName')
+
+    response_dict = {}
+
+    for idx in range(len(result)):
+        index = str(idx)
+        title, url = result[idx]
+        response_dict[index] = {'title': title, 'url': url}
+
+    return JsonResponse(response_dict)
 
 # def login(request):
 #     return render(request, 'article/login.html')

@@ -3,8 +3,13 @@
 # module = Rss('chosun')
 # module.scrap()
 
-from crawler import Crawler
+# from crawler import Crawler
+#
+# module = Crawler('chosun')
+# result = module.scrap('http://news.chosun.com/site/data/html_dir/2018/10/08/2018100802172.html')
+# print(result)
 
-module = Crawler('chosun')
-result = module.scrap('http://news.chosun.com/site/data/html_dir/2018/10/08/2018100802172.html')
-print(result)
+from searchEngine import SearchEngine
+
+module = SearchEngine('chosun')
+module.do_search('화재')
