@@ -114,18 +114,22 @@ def crawl(request):
     return render(request, 'article/crawl_result.html', response)
 @ csrf_exempt
 def search_in_web(request):
-    # Front-end와 협의 후 수정
-    # press = request.POST['press']
-    press = 'chosun'
     requestJson = json.loads(request.body)
+
+    # Front-end와 협의 후 수정
+    # Caution: 현재 유저가 보고 있는 (좌측 iframe) 언론사 이름이 들어있음
+    user_press = requestJson['journalism']
+    # press = 'chosun'
+
     keyword = requestJson['keyword']
 
-    if press == 'chosun':
-        search_engine = SearchEngine(press)
+    if user_press == 'chosun':
+        search_engine = SearchEngine(user_press)
         result = search_engine.do_search(keyword)
 
-    elif press == 'hani':
-        pass
+    elif user_press == 'hani':
+        search_engine = SearchEngine(user_press)
+        result = search_engine.do_search(keyword)
 
     else:
         return HttpResponse('WrongPressName')
@@ -134,8 +138,8 @@ def search_in_web(request):
 
     for idx in range(len(result)):
         index = str(idx)
-        title, url = result[idx]
-        response_dict[index] = {'title': title, 'url': url}
+        title, url, date = result[idx]
+        response_dict[index] = {'title': title, 'url': url, 'date': date}
 
     return JsonResponse(response_dict)
 

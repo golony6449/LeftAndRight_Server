@@ -2,15 +2,20 @@ from bs4 import BeautifulSoup
 import requests
 
 class SearchEngine:
-    def __init__(self, press):
-        self.press = press
+    def __init__(self, user_press):
+        if user_press == 'chosun':
+            self.press = 'hani'
+        elif user_press == 'hani':
+            self.press = 'chosun'
+        else:
+            Exception("SearchEngine: WrongPressParams")
 
     def do_search(self, keyword):
         if self.press == 'chosun':
             return self._search_in_chosun(keyword)
 
         elif self.press == 'hani':
-            pass
+            return self._search_in_hani(keyword)
 
         else:
             Exception("WrongPressParams: Press should be chosun or hani")
@@ -33,4 +38,32 @@ class SearchEngine:
             title = block.text.strip()
             addr = block.find('a').get('href')
             result.append((title, addr))
+        return result
+
+    def _search_in_hani(self, keyword):
+        url = 'http://m.hani.co.kr/arti/SEARCH/news/date/{}/list.html'.format(keyword)
+        header = {'User-agent': 'Mozilla/5.0 (Linux; U; Android 4.0.3; ko-kr; LG-L160L Build/IML74K) AppleWebkit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30'}
+        html = requests.get(url, headers=header)
+        html.encoding = 'utf-8'
+        parser = BeautifulSoup(html.text, 'html.parser')
+
+        # 뉴스 전체 목록 중 1페이지만 (15개 기사)
+        article_list = parser.find_all('li')
+        article_list_parsed = self._parse_article_hani(article_list)
+        return article_list_parsed
+
+    def _parse_article_hani(self, article_list):
+        result = []
+        for article in article_list:
+            block = article.find('div', {'class': 'text'})
+            tag_a_list = block.find_all('a')
+            title = tag_a_list[0].text
+            addr = 'm' + tag_a_list[0].get('href')[10:]
+            date = tag_a_list[1].text
+
+            # title = block.find('h4').text
+            # addr = block.find('a').get('href')
+            # date = block.find('div')
+
+            result.append((title, addr, date))
         return result
