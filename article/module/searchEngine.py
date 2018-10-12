@@ -66,25 +66,38 @@ class SearchEngine:
     #     return result
 
     def _search_in_hani(self, keyword):
-        url = 'http://m.hani.co.kr/arti/SEARCH/news/date/{}/list.html'.format(keyword)
-        header = {'User-agent': 'Mozilla/5.0 (Linux; U; Android 4.0.3; ko-kr; LG-L160L Build/IML74K) AppleWebkit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30'}
-        html = requests.get(url, headers=header)
+        url = 'http://search.hani.co.kr/Search?command=query&keyword={}&sort=s&period=year&media=news'.format(keyword)
+        html = requests.get(url)
         html.encoding = 'utf-8'
         parser = BeautifulSoup(html.text, 'html.parser')
 
-        # 뉴스 전체 목록 중 1페이지만 (15개 기사)
-        article_list = parser.find_all('li')
+        article_list = parser.find('ul', {'class': 'search-result-list'}).find_all('li')
         article_list_parsed = self._parse_article_hani(article_list)
         return article_list_parsed
 
+        # 뉴스 전체 목록 중 1페이지만 (15개 기사)
+        # article_list = parser.find_all('li')
+        # article_list_parsed = self._parse_article_hani(article_list)
+        # return article_list_parsed
+
     def _parse_article_hani(self, article_list):
         result = []
+
         for article in article_list:
-            block = article.find('div', {'class': 'text'})
-            tag_a_list = block.find_all('a')
-            title = tag_a_list[0].text
-            addr = 'http://m' + tag_a_list[0].get('href')[10:]
-            date = tag_a_list[1].text[:-6]
+            block = article.find('dl')
+            tag_a = block.find('dt').find('a')
+            title = tag_a.text
+            addr = 'http://m' + tag_a.get('href')[10:]
+            date = block.find('dd', {'class': 'date'}).find('dd').text
+            print()
+
+        # # Legacy Code
+        # for article in article_list:
+        #     block = article.find('div', {'class': 'text'})
+        #     tag_a_list = block.find_all('a')
+        #     title = tag_a_list[0].text
+        #     addr = 'http://m' + tag_a_list[0].get('href')[10:]
+        #     date = tag_a_list[1].text[:-6]
 
             # title = block.find('h4').text
             # addr = block.find('a').get('href')
