@@ -37,7 +37,7 @@ class SearchEngine:
             block = article.find('div', {'class': 'tit'})
             title = block.find('a').text
             addr = block.find('a').get('href')
-            date = block.find('span').text
+            date = block.find('span').text[:-4]
             result.append((title, addr, date))
         return result
 
