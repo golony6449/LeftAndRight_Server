@@ -83,8 +83,9 @@ class SearchEngine:
             block = article.find('div', {'class': 'text'})
             tag_a_list = block.find_all('a')
             title = tag_a_list[0].text
-            addr = 'm' + tag_a_list[0].get('href')[10:]
-            date = tag_a_list[1].text
+            addr = 'http://m' + tag_a_list[0].get('href')[10:]
+            date = tag_a_list[1].text[:-6]
+            print(date)
 
             # title = block.find('h4').text
             # addr = block.find('a').get('href')
