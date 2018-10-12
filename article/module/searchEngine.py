@@ -88,7 +88,7 @@ class SearchEngine:
             tag_a = block.find('dt').find('a')
             title = tag_a.text
             addr = 'http://m' + tag_a.get('href')[10:]
-            date = block.find('dd', {'class': 'date'}).find('dd').text
+            date = block.find('dd', {'class': 'date'}).find('dd').text[:-6]
             print()
 
         # # Legacy Code
